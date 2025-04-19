@@ -1,4 +1,4 @@
-FROM ubuntu:21.04
+FROM ubuntu:22.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG QSSTV_CONFIG=qsstv_9.0.conf
@@ -16,7 +16,7 @@ RUN apt-get -y update && apt-get -y upgrade && apt-get -y install --no-install-r
     libairspy-dev libairspyhf-dev libavahi-client-dev libbsd-dev \
     libfftw3-dev libhackrf-dev libiniparser-dev libncurses5-dev \
     libopus-dev librtlsdr-dev libusb-1.0-0-dev libusb-dev \
-    portaudio19-dev libasound2-dev libogg-dev uuid-dev rsync && rm -rf /var/lib/apt/lists/*
+    portaudio19-dev libasound2-dev libogg-dev uuid-dev rsync unzip && rm -rf /var/lib/apt/lists/*
 
 # spy server
 RUN git clone https://github.com/miweber67/spyserver_client.git && cd spyserver_client && make && cp ss_client /usr/bin/ss_iq
