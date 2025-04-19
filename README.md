@@ -1,4 +1,4 @@
-Skims SSTV off spyservers using QSSTV and uploads to mastodon. This is a WIP and shouldn't be considered as stable.
+Skims SSTV off a ka9q-radio or spyserver instance using QSSTV and uploads to mastodon. This is a WIP and shouldn't be considered as stable.
 
 > You may also need `--security-opt seccomp=unconfined` due to security restrictions on high resolution timers.
 
@@ -15,6 +15,8 @@ docker run \
 -e MODE=USB \
 --restart always \
 --name sstv-20 \
+-v /var/run/dbus:/var/run/dbus \
+-v /var/run/avahi-daemon/socket:/var/run/avahi-daemon/socket \
 ghcr.io/xssfox/sstv-skimmer:latest
 ```
 
@@ -26,10 +28,10 @@ These need to be in order for the skimmer to work
 
 | Name | Description                                                                                                  |
 | ---- | ------------------------------------------------------------------------------------------------------------ |
-| HOST | spy server hostname                                                                                          | 
+| HOST | spy server hostname OR ka9q-radio PCM host (e.g. sstvlsb-pcm.local)                                          | 
 | PORT | spy server port port                                                                                         |
-| FREQ | frequency for USB in HZ                                                                                      |
-| MODE | USB or LSB                                                                                                   |
+| FREQ | frequency for USB/LSB in Hz                                                                                  |
+| MODE | USB, LSB or KA9Q                                                                                             |
 | M_USERNAME | User name for mastodon instance                                                                        |
 | M_PASSWORD | Password for mastodon instance                                                                         |
 | M_URL |  Mastodon url eg : "https://botsin.space"                                                                   |

@@ -43,6 +43,10 @@ then
     csdr convert_s16_f |\
     csdr bandpass_fir_fft_cc 0 0.3 0.05 | csdr realpart_cf | csdr agc_ff | csdr limit_ff | \
     csdr convert_f_s16 | aplay -r 12000 -f s16 -t raw -c 1 - &
+elif [ "$MODE" == "KA9Q" ]
+then
+    echo "Using KA9Q Radio for SSB reception (ka9q-radio sets the sideband)"
+    pcmrecord --ssrc $FREQ --catmode --raw $HOST | aplay -r 12000 -f s16 -t raw -c 1 - &
 elif [ "$MODE" == "RTLFM" ]
 then
     echo "Using RTLSDR for FM reception"
