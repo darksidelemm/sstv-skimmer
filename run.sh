@@ -28,7 +28,7 @@ export PYTHONUNBUFFERED=1
 echo "Starting poster"
 python3 /poster.py &
 
-#run spy client
+# Start up the RF source
 if [ "$SOURCE" == "SpyServer" ]
 then
     if [ "$MODE" == "LSB" ]
