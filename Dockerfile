@@ -7,7 +7,7 @@ ARG QSSTV_CONFIG=qsstv_9.0.conf
 
 RUN apt-get update && apt-get install -y libfftw3-dev libfftw3-3 ffmpeg \
 xvfb qsstv pulseaudio build-essential git libsamplerate0-dev alsa-utils \
-xvfb python3 python3-pip cmake portaudio19-dev python-dev python3-opencv \
+xvfb python3 python3-pip cmake portaudio19-dev python3-dev python3-opencv \
 alsa-utils rtl-sdr
 
 RUN apt-get -y update && apt-get -y upgrade && apt-get -y install --no-install-recommends \
