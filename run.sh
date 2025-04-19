@@ -29,42 +29,53 @@ echo "Starting poster"
 python3 /poster.py &
 
 #run spy client
-if [ "$MODE" == "LSB" ]
+if [ "$SOURCE" == "SpyServer" ]
 then
-    echo "Connecting to $HOST LSB"
-    ss_iq -a 1200 -r $HOST -q $PORT -f $FREQ -s 12000 -b 16 - | \
-    csdr convert_s16_f |\
-    csdr bandpass_fir_fft_cc -0.3 0.0 0.05 | csdr realpart_cf | csdr agc_ff | csdr limit_ff | \
-    csdr convert_f_s16 | aplay -r 12000 -f s16 -t raw -c 1 - &
-elif [ "$MODE" == "USB" ]
+    if [ "$MODE" == "LSB" ]
+    then
+        echo "SpyServer - Connecting to $HOST LSB"
+        ss_iq -a 1200 -r $HOST -q $PORT -f $FREQ -s 12000 -b 16 - | \
+        csdr convert_s16_f |\
+        csdr bandpass_fir_fft_cc -0.3 0.0 0.05 | csdr realpart_cf | csdr agc_ff | csdr limit_ff | \
+        csdr convert_f_s16 | aplay -r 12000 -f s16 -t raw -c 1 - &
+    elif [ "$MODE" == "USB" ]
+    then
+        echo "SpyServer - Connecting to $HOST USB"
+        ss_iq -a 1200 -r $HOST -q $PORT -f $FREQ -s 12000 -b 16 - | \
+        csdr convert_s16_f |\
+        csdr bandpass_fir_fft_cc 0 0.3 0.05 | csdr realpart_cf | csdr agc_ff | csdr limit_ff | \
+        csdr convert_f_s16 | aplay -r 12000 -f s16 -t raw -c 1 - &
+    elif [ "$MODE" == "FM" ]
+    then
+        echo "SpyServer - Connecting to $HOST FM"
+        ss_iq -a 12000 -r $HOST -q $PORT -f $FREQ -s 24000 -b 16 - | \
+        csdr convert_s16_f |\
+        csdr fmdemod_quadri_cf | csdr limit_ff | csdr fastagc_ff | csdr convert_f_s16 |\
+        aplay -r 24000 -f s16 -t raw -c 1 - &
+    else
+        echo "Unknown mode for SpyServer"
+        ./shutdown.sh
+    fi
+elif [ "$SOURCE" == "KA9Q" ]
 then
-    echo "Connecting to $HOST USB"
-    ss_iq -a 1200 -r $HOST -q $PORT -f $FREQ -s 12000 -b 16 - | \
-    csdr convert_s16_f |\
-    csdr bandpass_fir_fft_cc 0 0.3 0.05 | csdr realpart_cf | csdr agc_ff | csdr limit_ff | \
-    csdr convert_f_s16 | aplay -r 12000 -f s16 -t raw -c 1 - &
-elif [ "$MODE" == "KA9Q" ]
-then
-    echo "Using KA9Q Radio for SSB reception (ka9q-radio sets the sideband)"
+    # Note - KA9Q is in control of the reception mode. Make sure it's set appropriately in the
+    # ka9q-radio configs!
+    echo "KA9Q-Radio - Using $HOST, ssrc $FREQ"
     pcmrecord --ssrc $FREQ --catmode --raw $HOST | aplay -r 12000 -f s16 -t raw -c 1 - &
-elif [ "$MODE" == "RTLFM" ]
+elif [ "$SOURCE" == "RTLSDR" ]
 then
-    echo "Using RTLSDR for FM reception"
-    rtl_fm -f $FREQ -s 22050 -F9 -M fm | aplay -r 22050 -f s16 -t raw -c 1 - &
-elif [ "$MODE" == "FM" ]
-then
-    echo "Using NBFM via SpyServer"
-    ss_iq -a 12000 -r $HOST -q $PORT -f $FREQ -s 24000 -b 16 - | \
-    csdr convert_s16_f |\
-    csdr fmdemod_quadri_cf | csdr limit_ff | csdr fastagc_ff | csdr convert_f_s16 |\
-    aplay -r 24000 -f s16 -t raw -c 1 - &
-else
-    echo "UNKNOWN MODE"
-    ./shutdown.sh
+    if [ "$MODE" == "FM" ]
+    then
+        echo "Using RTLSDR for FM reception"
+        rtl_fm -f $FREQ -s 22050 -F9 -M fm | aplay -r 22050 -f s16 -t raw -c 1 - &
+    else
+        echo "Unknown mode for RTLSDR"
+        ./shutdown.sh
+    fi
 fi
 
-# wait for spy client to connect
-sleep 2 
+# Wait a little bit for everything to start up
+sleep 10
 
 # start sound monitoring script - shuts down container if no sound detected.
 soundmeter --trigger -1 10 --action exec --exec /shutdown.sh --daemon

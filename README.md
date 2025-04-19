@@ -12,6 +12,7 @@ docker run \
 -e M_URL="https://botsin.space" \
 -e M_CLIENT_ID='' \
 -e M_CLIENT_SECRET='' \
+-e SOURCE=SpyServer \
 -e MODE=USB \
 --restart always \
 --name sstv-20 \
@@ -29,9 +30,10 @@ These need to be in order for the skimmer to work
 | Name | Description                                                                                                  |
 | ---- | ------------------------------------------------------------------------------------------------------------ |
 | HOST | spy server hostname OR ka9q-radio PCM host (e.g. sstvlsb-pcm.local)                                          | 
-| PORT | spy server port port                                                                                         |
+| PORT | spy server port (unused for ka9q-radio)                                                                      |
 | FREQ | frequency for USB/LSB in Hz                                                                                  |
-| MODE | USB, LSB or KA9Q                                                                                             |
+| SOURCE | KA9Q, SpyServer, or RTLSDR                                                                                 |
+| MODE | USB, LSB or FM                                                                                               |
 | M_USERNAME | User name for mastodon instance                                                                        |
 | M_PASSWORD | Password for mastodon instance                                                                         |
 | M_URL |  Mastodon url eg : "https://botsin.space"                                                                   |
