@@ -48,7 +48,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          platforms: linux/amd64,linux/arm64
           # cache-from: type=local,src=/tmp/buildx-cache
           # cache-to: type=local,dest=/tmp/buildx-cache-new,mode=max
           push: ${{ github.event_name != 'pull_request' }}
@@ -58,11 +58,11 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          platforms: linux/amd64,linux/arm64
           # cache-from: type=local,src=/tmp/buildx-cache
           # cache-to: type=local,dest=/tmp/buildx-cache-new,mode=max
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ghcr.io/xssfox/sstv-skimmer:drm
+          tags: ghcr.io/darksidelemm/sstv-skimmer:drm
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             QSSTV_CONFIG=qsstv_9.0_drm.conf
